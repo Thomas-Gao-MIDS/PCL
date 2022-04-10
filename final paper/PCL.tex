@@ -59,7 +59,7 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-In support of SemEval-2022 Task 4, Patronizing and Condescending Language (PCL) Detection, we present a fine-tuned BERT model for identifying PCL embedded in news articles, which meaningfully outperforms baseline models with an F1-score of 0.52. We apply the Integrated Gradients method to attribute the model’s prediction to individual words, thereby revealing the learned knowledge of the model. We found that the model encodes explicit PCL vocabulary well, but falls short on differentiating factual statements and PCL and capturing PCL without explicit words.
+In support of SemEval-2022 Task 4, Patronizing and Condescending Language (PCL) Detection, we present a fine-tuned BERT model for identifying PCL embedded in news articles, which meaningfully outperforms baseline models with an F1-score of 0.52. We apply the Integrated Gradients method to attribute the model’s prediction to individual words, thereby revealing the learned knowledge of the model. We found that the model encodes explicit PCL vocabulary well, but has bias for racial and religious terms. The model falls short of truly understanding PCL, struggling to differentiate factual statements and PCL and capturing PCL without explicit words.
 \end{abstract}
 
 \section{Introduction}
@@ -68,7 +68,7 @@ Patronizing and Condescending Language (PCL) is language use that shows a discou
 
 In SemEval-2022 Task 4: Patronizing and Condescending Language Detection, the organizers created the Don’t Patronize Me! dataset, which contains over 10,000 paragraphs about vulnerable communities extracted from news stories. The dataset has been annotated to indicate the presence of PCL, categories of PCL and corresponding text spans. Our research focuses on subtask 1, which is to predict the presence of PCL as a binary classification problem.
 
-To address this problem, we experiment with Logistic Regression with the bag-of-words model, CNN with Global Vectors for Word Representation (GloVe)~\cite{pennington2014glove}, and Bidirectional Encoder Representation from Transformer (BERT)~\cite{devlin2018bert}. We use Integrated Gradients~\cite{sundararajan2017axiomatic} to shed light on the model learnings and mistakes, which can be used as pointers for future research. Our final model yields an F1-score of 0.52, meaningfully better than the baseline models.
+To address this problem, we experiment with Logistic Regression with the bag-of-words model, CNN with Global Vectors for Word Representation (GloVe)~\cite{pennington2014glove}, and Bidirectional Encoder Representation from Transformer (BERT)~\cite{devlin2018bert}. Our up-sampled BERT model yields an F1-score of 0.52, meaningfully better than the baseline models. For the BERT model, we use Integrated Gradients~\cite{sundararajan2017axiomatic} to shed light on the model knowledge and mistakes, which can be used as pointers for future research. 
 
 In the rest of this paper, we organize the content as follows: related work of harmful language modeling in section 2; section 3 introduces data description, preprocessing, and model methodologies; section 4 discusses experimental results; section 5 presents sample model predictions and their attributions; section 6 discusses interesting areas for future work. We also present the conclusion of our work at the end of the paper.
 
@@ -77,9 +77,9 @@ In the rest of this paper, we organize the content as follows: related work of h
 
 There were similar tasks aimed at studying harmful languages. In SemEval 2019 Task 6 Identifying and Categorizing Offensive Language~\cite{zampieri2019semeval}, models used ranged from traditional machine learning, e.g. SVM and logistic regression, to deep learning, e.g. CNN, RNN, BiLSTM, ELMo and BERT. Among the top-10 teams, seven used BERT. For the classification task, the top team experimented with different models including linear models and LSTM, and found pre-trained BERT with fine-tuning performed best. The runner-up team also used BERT model and applied techniques to address the class imbalance in the training data.
 
-Compared to offensive language, patronizing language in news articles is more challenging to model because of the subtlety. However, the organizers show that BERT-based approaches show non-trivial results and outperform simpler models~\cite{perez2020don}. A review of submitted papers for the task show that the top performing team PALI-NLP used a novel Transformer-based model BERT-PCL with two discriminative fine-tuning strategies~\cite{hu2022pali}, and another team achieving top quartile performance simply ensembled five RoBERTa models that are seeded differently~\cite{zhao2022utsa}. Team SATLab uses a logistic regression model only fed with characters and word n-grams and obtained performance much lower than the best teams~\cite{bestgen2022satlab}.
+Compared to offensive language, patronizing language in news articles is more challenging to model because of the subtlety. However, the organizers show that BERT-based approaches show non-trivial results and outperform simpler models~\cite{perez2020don}. A review of submitted papers for the task show that the top performing team PALI-NLP uses a novel Transformer-based model BERT-PCL with two discriminative fine-tuning strategies~\cite{hu2022pali}, and another team achieving top quartile performance ensembles five RoBERTa models that are seeded differently~\cite{zhao2022utsa}. Team SATLab uses a logistic regression model only fed with characters and word n-grams and obtained performance lower than the best teams~\cite{bestgen2022satlab}.
 
-Our work therefore studies the BERT-based models. Specifically, we fine-tune the BERT model to reproduce the meaningful results and uses Integrated Gradients~\cite{sundararajan2017axiomatic} method to analyse BERT's learned knowledge and predictions.
+Our work therefore studies the BERT-based models. Specifically, we fine-tune the BERT model to reproduce the meaningful results and use Integrated Gradients~\cite{sundararajan2017axiomatic} method to analyse BERT's learned knowledge and predictions.
 
 \section{Data and Methodology}
 
@@ -170,7 +170,7 @@ In the second example, the model predicts positive class confidently based on th
 
 The third example does not contain explicit PCL words. The model predicts false on the basis of \textit{month}, \textit{said}, \textit{undergraduate}, \textit{universities}, \textit{colleagues}. The first two are neutral vocabularies while the latter three words might be associated with capability and enablement. The annotators categorized this as Unbalanced Power most likely due to the intentional comparison between able-bodied and disabled students. We agree that the language would cause harm to the disabled community, and it is an example of implicit PCL.
 
-In summary, some vocabularies that are likely to be associated with PCL and our model is capable of making note of them. However, as shown in our examples, presence of such words does not automatically mean PCL, and PCL can also be implicit and not contain any explicit PCL words. Indeed, we find it sometimes challenging to judge ourselves, and the criteria seems to be empathizing with the vulnerable individuals or community. However, this approach often relies on presupposition, and therefore we ought to be humble and ultimately listen to members of the vulnerable communities to learn their perspectives.
+In summary, our model is capable of making note of vocabularies that are likely to be associated with PCL. However, as shown in our examples, presence of such words does not automatically mean PCL, and PCL can also be implicit and not contain any explicit PCL words. In appendix~\ref{sec:appendix}, we also observe that vulnerable and religious vocabularies are associated with PCL, leading to false positive predictions. On the other hand, certain seemingly innocent words, e.g. \textit{administration}, can sometimes dominate in false negative predictions. This might be due to overfitting and supports the case of ensembling.
 
 \section{Future Work}
 
@@ -180,7 +180,7 @@ Due to time limitations, there are additional architectures that we would like t
 
 In this paper, we explore how pre-trained BERT models can be fine-tuned for classifying whether a paragraph contains PCL. This standard approach achieves an F1-score of 0.52, a non-trivial result compared to baselines. 
 
-We also use the Integrated Gradients method to attribute the model’s decisions and gain insights into the model’s learned knowledge. We find that the model encodes explicit PCL vocabulary well, but falls short on differentiating between facts and PCL and capturing PCL without explicit words. We also find evidence of racial bias in the model.
+We also use the Integrated Gradients method to attribute the model’s decisions and gain insights into the model’s learned knowledge. We find that the model encodes explicit PCL vocabulary well, but falls short on differentiating between facts and PCL and capturing PCL without explicit words. We also find evidence of racial and religious bias in the model.
 
 PCL is harmful but often unconscious language use due to a lack of perspectives of the vulnerable communities. Machine learning has a great opportunity to encode perspectives from vulnerable communities and reduce such harmful language use in our society.
 
