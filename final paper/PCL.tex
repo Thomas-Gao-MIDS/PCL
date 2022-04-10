@@ -129,7 +129,7 @@ Regarding the text span annotation and PCL categorization, it is worth noting th
 
 The official evaluation metric of this task is the F1-score of the positive class. Predicting the majority class, i.e. no PCL, would produce F1-score of 0 because recall is 0. Random guess would F1-score of 0.1604.
 
-Our machine learning models all perform better than random guesses, with the BERT models producing meaningfully better results than Logistic Regression (BOW) and CNN (GloVe). The upsampled model produces a higher F1-score than the downsampled model, as expected given more data. We submitted our predictions on the test data reserved by the organizers, and achieved an F1-score of 0.5068, slightly lower than the score on the dev dataset. See table ~\ref{tab:perf} for model performance.
+Our machine learning models all perform better than random guesses, with the BERT models producing meaningfully better results than Logistic Regression (BOW) and CNN (GloVe). The upsampled model produces a higher F1-score than the downsampled model, as expected given more data. We submitted our predictions on the test data reserved by the organizers, and achieved an F1-score of 0.5068, slightly lower than the score on the dev dataset. See Table~\ref{tab:perf} for model performance.
 
 
 \begin{table*}
@@ -155,7 +155,7 @@ To understand how the BERT model is making the predictions, we examine the contr
 
 For feature embedding, we use the BERT input embedding; for baseline embedding, we use zero embedding for word tokens and BERT input embedding for non-word tokens. Between the input word embedding and baseline word embedding, we create 40 equally spaced embedding steps. We record the gradients of the final prediction with respect to the input values at each embedding step, and compute the attribution of each word by summing the products of gradients and step embedding.
 
-Figure~\ref{fig:fig1} shows top examples where the model is most confident. We attribute the model predictions to words, with green and red backgrounds indicating positive and negative contribution to PCL prediction and the darkness of colors corresponding to the magnitude of the contribution. We also use the span annotations where the two annotators are in agreement as the gold span, colored in orange, and provide the PCL category. Additional examples are included in the appendix~\ref{sec:appendix}.
+Figure~\ref{fig:fig1} shows top examples where the model is most confident. We attribute the model predictions to words, with green and red backgrounds indicating positive and negative contribution to PCL prediction and the darkness of colors corresponding to the magnitude of the contribution. We also use the span annotations where the two annotators are in agreement as the gold span, colored in orange, and provide the PCL category. Additional examples are included in the Appendix~\ref{sec:appendix}.
 
 \begin{figure*}
     \centering
@@ -170,7 +170,7 @@ In the second example, the model predicts positive class confidently based on th
 
 The third example does not contain explicit PCL words. The model predicts false on the basis of \textit{month}, \textit{said}, \textit{undergraduate}, \textit{universities}, \textit{colleagues}. The first two are neutral vocabularies while the latter three words might be associated with capability and enablement. The annotators categorized this as Unbalanced Power most likely due to the intentional comparison between able-bodied and disabled students. We agree that the language would cause harm to the disabled community, and it is an example of implicit PCL.
 
-In summary, our model is capable of making note of vocabularies that are likely to be associated with PCL. However, as shown in our examples, presence of such words does not automatically mean PCL, and PCL can also be implicit and not contain any explicit PCL words. In appendix~\ref{sec:appendix}, we also observe that vulnerable and religious vocabularies are associated with PCL, leading to false positive predictions. On the other hand, certain seemingly innocent words, e.g. \textit{administration}, can sometimes dominate in false negative predictions. This might be due to overfitting and supports the case of ensembling.
+In summary, our model is capable of making note of vocabularies that are likely to be associated with PCL. However, as shown in our examples, presence of such words does not automatically mean PCL, and PCL can also be implicit and not contain any explicit PCL words. In Appendix~\ref{sec:appendix}, we also observe that vulnerable and religious vocabularies are associated with PCL, leading to false positive predictions. On the other hand, certain seemingly innocent words, e.g. \textit{administration}, can sometimes dominate in false negative predictions. This might be due to overfitting and supports the case of ensembling.
 
 \section{Future Work}
 
@@ -193,7 +193,7 @@ We would like to thank Joachim Rahmfeld for his guidance and feedback. We are al
 
 \appendix
 
-\section*{Appendix: Additional Examples}
+\section{Appendix: Additional Examples}
 Figure~\ref{fig:fig2} below shows additional examples of classification attribution. 
 
 \label{sec:appendix}
